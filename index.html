@@ -1,32 +1,272 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Portal CX</title>
-
+<title>Central de Declarações</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232954ff'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-size='34' font-weight='800' fill='white' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
+<div class="app-shell">
+    <!-- ===================== BARRA LATERAL ===================== -->
+    <aside class="side-rail">
+        <div class="side-rail-logo" title="Central de Declarações">
+            <span class="brand-mark">D</span>
+        </div>
+        <div class="side-rail-spacer"></div>
+        <div class="side-rail-foot">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </div>
+    </aside>
 
-<div class="container">
+    <div class="wrap">
+    <!-- ===================== CABEÇALHO ===================== -->
+    <header class="app-header">
+        <div class="header-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M9 15h6"></path><path d="M9 11h6"></path></svg>
+        </div>
+        <div>
+            <h1>Central de Declarações</h1>
+            <p class="subtitle">Gere declarações de forma rápida e segura</p>
+        </div>
+    </header>
 
-<h1>Portal CX</h1>
+    <div class="layout">
+        <!-- ===================== COLUNA ESQUERDA ===================== -->
+        <div class="col-form">
+            <!-- ---------- ETAPA 1 — TIPO DE DECLARAÇÃO ---------- -->
+            <section class="step-card">
+                <div class="step-header">
+                    <span class="step-num">1</span>
+                    <div>
+                        <h2>Tipo de declaração</h2>
+                        <p>Selecione o tipo de documento que deseja gerar.</p>
+                    </div>
+                </div>
+                <div class="doc-type-grid">
+                    <button class="doc-type-card active" data-page="pesquisa">
+                        <span class="dtc-icon dtc-blue">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>
+                        </span>
+                        <span>Declaração 1</span>
+                        <span class="dtc-check">✓</span>
+                    </button>
+                    <button class="doc-type-card" data-page="contaAtiva">
+                        <span class="dtc-icon dtc-green">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="m17 11 2 2 4-4"></path></svg>
+                        </span>
+                        <span>Declaração 2</span>
+                        <span class="dtc-check">✓</span>
+                    </button>
+                    <button class="doc-type-card" data-page="contaCancelada">
+                        <span class="dtc-icon dtc-red">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
+                        </span>
+                        <span>Declaração 3</span>
+                        <span class="dtc-check">✓</span>
+                    </button>
+                    <button class="doc-type-card" data-page="dda">
+                        <span class="dtc-icon dtc-cyan">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path><path d="M12 15V3"></path></svg>
+                        </span>
+                        <span>Declaração 4</span>
+                        <span class="dtc-check">✓</span>
+                    </button>
+                    <button class="doc-type-card" data-page="circularizacao">
+                        <span class="dtc-icon dtc-purple">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg>
+                        </span>
+                        <span>Declaração 5</span>
+                        <span class="dtc-check">✓</span>
+                    </button>
+                    <button class="doc-type-card" data-page="titularidade">
+                        <span class="dtc-icon dtc-teal">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                        </span>
+                        <span>Declaração 6</span>
+                        <span class="dtc-check">✓</span>
+                    </button>
+                    <button class="doc-type-card" data-page="pagamentoDuplicado">
+                        <span class="dtc-icon dtc-orange">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M4 16V4a2 2 0 0 1 2-2h10"></path></svg>
+                        </span>
+                        <span>Declaração 7</span>
+                        <span class="dtc-check">✓</span>
+                    </button>
+                </div>
+            </section>
 
-<p>Gerador de Comprovantes</p>
+            <!-- ---------- ETAPA 2 — FORMA DE PAGAMENTO (só para Verificação de Pagamento) ---------- -->
+            <section class="step-card" id="stepPagamento">
+                <div class="step-header">
+                    <span class="step-num">2</span>
+                    <div>
+                        <h2>Forma de pagamento</h2>
+                        <p>Selecione a forma de pagamento relacionada à declaração.</p>
+                    </div>
+                </div>
+                <div class="payment-grid">
+                    <button type="button" id="btnPix" class="payment-card active">
+                        <span class="dtc-icon dtc-teal">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 3.5 3.5L12 10 8.5 6.5Z"></path><path d="m12 14 3.5 3.5L12 21l-3.5-3.5Z"></path><path d="m3 12 3.5-3.5L10 12l-3.5 3.5Z"></path><path d="m14 12 3.5-3.5L21 12l-3.5 3.5Z"></path></svg>
+                        </span>
+                        <span>PIX</span>
+                    </button>
+                    <button type="button" id="btnBoleto" class="payment-card">
+                        <span class="dtc-icon dtc-ink">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4v16"></path><path d="M7 4v16"></path><path d="M11 4v16"></path><path d="M14 4v16"></path><path d="M18 4v16"></path><path d="M21 4v16"></path></svg>
+                        </span>
+                        <span>BOLETO</span>
+                    </button>
+                </div>
+            </section>
 
-<button>
-📄 Ausência de Pagamento
-</button>
+            <!-- ---------- ETAPA 3 — INFORMAÇÕES ---------- -->
+            <section class="step-card">
+                <div class="step-header">
+                    <span class="step-num">3</span>
+                    <div>
+                        <h2>Informações</h2>
+                        <p>Preencha os dados abaixo para gerar a declaração.</p>
+                    </div>
+                </div>
 
+                <!-- ---------- VERIFICAÇÃO DE PAGAMENTO ---------- -->
+                <form class="page active" id="pesquisa" onsubmit="return false">
+                    <label class="field-label" for="resultadoPesquisa">Resultado da pesquisa</label>
+                    <select id="resultadoPesquisa">
+                        <option value="nao_identificado">Não identificado</option>
+                        <option value="identificado">Identificado</option>
+                    </select>
+                    <label class="field-label" id="lblIdentificador" for="identificadorPagamento">ID Fim a Fim</label>
+                    <input type="text" id="identificadorPagamento" placeholder="Informe o identificador">
+                    <label class="field-label" for="valorPagamento">Valor</label>
+                    <input type="text" id="valorPagamento" class="money" placeholder="0,00">
+                </form>
+                <!-- ---------- CONTA ATIVA ---------- -->
+                <form class="page" id="contaAtiva" onsubmit="return false">
+                    <label class="field-label" for="cnpjAtiva">CNPJ</label>
+                    <input type="text" id="cnpjAtiva" placeholder="00.000.000/0000-00">
+                    <label class="field-label" for="empresaAtiva">Empresa</label>
+                    <input type="text" id="empresaAtiva" placeholder="Razão social do cliente">
+                    <label class="field-label" for="idContaAtiva">ID da Conta</label>
+                    <input type="text" id="idContaAtiva" placeholder="ID da conta">
+                    <label class="field-label" for="dataCriacaoAtiva">Data de Criação</label>
+                    <input type="date" id="dataCriacaoAtiva">
+                    <label class="field-label" for="horaCriacaoAtiva">Horário</label>
+                    <input type="time" id="horaCriacaoAtiva" value="00:00">
+                </form>
+                <!-- ---------- CONTA CANCELADA ---------- -->
+                <form class="page" id="contaCancelada" onsubmit="return false">
+                    <label class="field-label" for="cnpjCancelada">CNPJ</label>
+                    <input type="text" id="cnpjCancelada" placeholder="00.000.000/0000-00">
+                    <label class="field-label" for="empresaCancelada">Empresa</label>
+                    <input type="text" id="empresaCancelada" placeholder="Razão social do cliente">
+                    <label class="field-label" for="idContaCancelada">ID da Conta</label>
+                    <input type="text" id="idContaCancelada" placeholder="ID da conta">
+                    <label class="field-label" for="dataCriacaoCancelada">Data de Criação</label>
+                    <input type="date" id="dataCriacaoCancelada">
+                    <label class="field-label" for="dataCancelamento">Data de Cancelamento</label>
+                    <input type="date" id="dataCancelamento">
+                </form>
+                <!-- ---------- BAIXA DE DDA ---------- -->
+                <form class="page" id="dda" onsubmit="return false">
+                    <label class="field-label" for="clienteDDA">Nome do Cliente</label>
+                    <input type="text" id="clienteDDA" placeholder="Nome completo ou razão social">
+                    <label class="field-label" for="codigoBarrasDDA">Código de Barras</label>
+                    <input type="text" id="codigoBarrasDDA" placeholder="Código de barras do boleto">
+                    <label class="field-label" for="valorDDA">Valor</label>
+                    <input type="text" id="valorDDA" class="money" placeholder="0,00">
+                    <label class="field-label" for="dataBaixaDDA">Data da Baixa</label>
+                    <input type="date" id="dataBaixaDDA">
+                </form>
+                <!-- ---------- CARTA DE CIRCULARIZAÇÃO ---------- -->
+                <form class="page" id="circularizacao" onsubmit="return false">
+                    <label class="field-label" for="empresaCircularizacao">Empresa</label>
+                    <input type="text" id="empresaCircularizacao" placeholder="Razão social do cliente">
+                    <label class="field-label" for="idContaCircularizacao">ID da Conta</label>
+                    <input type="text" id="idContaCircularizacao" placeholder="ID da conta">
+                    <label class="field-label" for="dataBaseCircularizacao">Data Base</label>
+                    <input type="date" id="dataBaseCircularizacao">
+                    <label class="field-label" for="saldoContaPagamento">Conta Pagamento (Titular)</label>
+                    <input type="text" id="saldoContaPagamento" class="money" placeholder="0,00">
+                    <label class="field-label" for="saldoContaRecebiveis">Recebíveis (Titular)</label>
+                    <input type="text" id="saldoContaRecebiveis" class="money" placeholder="0,00">
+                    <label class="field-label" for="vinculadaContaPagamento">Conta Pagamento (Vinculada)</label>
+                    <input type="text" id="vinculadaContaPagamento" class="money" placeholder="0,00">
+                    <label class="field-label" for="vinculadaContaRecebiveis">Recebíveis (Vinculada)</label>
+                    <input type="text" id="vinculadaContaRecebiveis" class="money" placeholder="0,00">
+                </form>
+                <!-- ---------- TERMO DE TITULARIDADE ---------- -->
+                <form class="page" id="titularidade" onsubmit="return false">
+                    <label class="field-label" for="empresaTitularidade">Empresa</label>
+                    <input type="text" id="empresaTitularidade" placeholder="Razão social do cliente">
+                    <label class="field-label" for="cnpjTitularidade">CNPJ</label>
+                    <input type="text" id="cnpjTitularidade" placeholder="00.000.000/0000-00">
+                    <label class="field-label" for="bancoTitularidade">Banco</label>
+                    <input type="text" id="bancoTitularidade" placeholder="Ex: 401">
+                    <label class="field-label" for="agenciaTitularidade">Agência</label>
+                    <input type="text" id="agenciaTitularidade" placeholder="Ex: 0001">
+                    <label class="field-label" for="contaTitularidade">Conta</label>
+                    <input type="text" id="contaTitularidade" placeholder="Ex: 6156811-0">
+                    <label class="field-label" for="dataCadastroTitularidade">Cadastrado desde</label>
+                    <input type="date" id="dataCadastroTitularidade">
+                </form>
+                <!-- ---------- PAGAMENTO DUPLICADO ---------- -->
+                <form class="page" id="pagamentoDuplicado" onsubmit="return false">
+                    <label class="field-label" for="codigoBarrasDuplicado">Código de Barras</label>
+                    <input type="text" id="codigoBarrasDuplicado" placeholder="Código de barras do boleto">
+                    <label class="field-label" for="valorDuplicado">Valor</label>
+                    <input type="text" id="valorDuplicado" class="money" placeholder="0,00">
+                    <label class="field-label" for="resultadoDuplicado">Resultado da análise</label>
+                    <select id="resultadoDuplicado">
+                        <option value="nao_duplicado">Não houve pagamento duplicado</option>
+                        <option value="duplicado">Houve pagamento duplicado</option>
+                    </select>
+                </form>
+
+                <p class="security-note">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Seus dados estão protegidos e são utilizados apenas para geração da declaração.
+                </p>
+            </section>
+        </div>
+
+        <!-- ===================== COLUNA DIREITA — PREVIEW ===================== -->
+        <div class="col-preview">
+            <section class="preview-card">
+                <div class="preview-header">
+                    <div class="preview-header-title">
+                        <h3>Visualização da declaração</h3>
+                        <span class="live-dot" title="Atualização em tempo real"></span>
+                    </div>
+                </div>
+                <div class="preview-body" id="previewBody">
+                    <div class="a4-viewport" id="a4Viewport">
+                        <div class="doc-canvas" id="docCanvas"></div>
+                    </div>
+                </div>
+                <!-- Barra inferior: controles de zoom à esquerda, Download PDF à direita -->
+                <div class="preview-controls" id="previewControls">
+                    <div class="preview-controls-zoom">
+                        <button type="button" id="btnZoomOut" title="Diminuir zoom">−</button>
+                        <span id="zoomIndicator">100%</span>
+                        <button type="button" id="btnZoomIn" title="Aumentar zoom">+</button>
+                        <span class="preview-sep"></span>
+                        <button type="button" id="btnFullscreen" title="Tela cheia">⛶</button>
+                    </div>
+                    <button type="button" class="btn-download" id="btnBaixarPDF">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path><path d="M12 15V3"></path></svg>
+                        Download PDF
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+    </div>
 </div>
-
-<script src="script.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+<script src="script.js" defer></script>
 </body>
-
 </html>
