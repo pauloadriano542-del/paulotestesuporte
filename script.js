@@ -497,33 +497,51 @@ async function baixarPDFDireto(nomeArquivo, botao) {
         botao.innerHTML = "Baixando...";
     }
     // ---------------------------------------------------------------
-    // CORREÇÃO DO "PDF EM BRANCO":
+    // CORREÇÃO DO "PDF EM BRANCO" / "PDF CORTADO":
     // o preview (#docCanvas) vive dentro de um painel com
     // "position: sticky" (.col-preview) e um contêiner com rolagem
     // própria (.preview-body { overflow: auto }). Essa combinação é um
     // bug conhecido do html2canvas: ele não calcula corretamente a
-    // posição/recorte de elementos dentro de ancestrais sticky/overflow,
-    // e o resultado é uma captura "fantasma" — o PDF sai gerado, mas em
-    // branco, mesmo sem erro nenhum no console.
-    // A solução robusta é clonar o conteúdo para um contêiner isolado,
-    // fixado fora da área visível da tela (sem sticky, sem scroll), e
-    // capturar esse clone — assim o html2canvas nunca lida com o painel
-    // problemático.
+    // posição/recorte de elementos dentro de ancestrais sticky/overflow.
+    // A solução é clonar o conteúdo para um contêiner isolado. O clone
+    // precisa ficar na posição REAL (0,0) da tela — empurrá-lo para fora
+    // da tela com um "transform" grande (ex: translateX(-10000px)) faz o
+    // html2canvas recortar a captura no lugar errado, cortando o
+    // documento pela metade. Por isso, em vez de escondê-lo fora da
+    // tela, ele fica em (0,0) mas coberto por um overlay opaco de
+    // carregamento — assim a captura sempre bate certinho e o usuário
+    // só vê a tela de "Gerando PDF...".
     // ---------------------------------------------------------------
     const clone = canvas.cloneNode(true);
     clone.style.transform = "none";
-    clone.style.margin = "0";
+    clone.style.margin = "0 auto";
 
     const wrapper = document.createElement("div");
     wrapper.style.position = "fixed";
     wrapper.style.top = "0";
     wrapper.style.left = "0";
-    // Fora da área visível, mas ainda renderizado normalmente pelo
-    // navegador (display:none faria o html2canvas capturar em branco).
-    wrapper.style.transform = "translateX(-10000px)";
-    wrapper.style.zIndex = "-1";
+    wrapper.style.width = "100%";
+    wrapper.style.zIndex = "9998";
+    wrapper.style.display = "flex";
+    wrapper.style.justifyContent = "center";
     wrapper.appendChild(clone);
+
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.inset = "0";
+    overlay.style.background = "#f2f4f8";
+    overlay.style.zIndex = "9999";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.style.fontFamily = "inherit";
+    overlay.style.color = "#40434c";
+    overlay.style.fontSize = "14px";
+    overlay.style.fontWeight = "600";
+    overlay.textContent = "Gerando PDF...";
+
     document.body.appendChild(wrapper);
+    document.body.appendChild(overlay);
 
     try {
         // Espera as imagens (se houver) carregarem de fato antes de
@@ -545,6 +563,12 @@ async function baixarPDFDireto(nomeArquivo, botao) {
         // manter a geração rápida e o canvas total dentro de um tamanho seguro.
         const escala = altura > 6000 ? 1 : altura > 3000 ? 1.5 : 2;
 
+        // Posição real do clone na tela (o wrapper o centraliza
+        // horizontalmente com "display:flex; justify-content:center").
+        // Passar esse retângulo explicitamente garante que o html2canvas
+        // capture exatamente essa área, sem cortes.
+        const rect = clone.getBoundingClientRect();
+
         const opcoes = {
             margin: 0,
             filename: nomeArquivo,
@@ -555,14 +579,14 @@ async function baixarPDFDireto(nomeArquivo, botao) {
             html2canvas: {
                 scale: escala,
                 useCORS: true,
-                // O clone está isolado, sem sticky/scroll/zoom no caminho,
-                // então a posição real dele já bate com (0,0) — não é mais
-                // necessário compensar scroll da janela nem forçar
-                // windowWidth/windowHeight do documento inteiro.
+                x: rect.left,
+                y: rect.top,
                 scrollX: 0,
                 scrollY: 0,
-                windowWidth: largura,
-                windowHeight: altura
+                width: largura,
+                height: altura,
+                windowWidth: document.documentElement.scrollWidth,
+                windowHeight: document.documentElement.scrollHeight
             },
             jsPDF: {
                 unit: "px",
@@ -590,6 +614,7 @@ async function baixarPDFDireto(nomeArquivo, botao) {
         }
     } finally {
         wrapper.remove();
+        overlay.remove();
         if (botao) {
             botao.disabled = false;
             botao.innerHTML = botao.dataset.textoOriginal;
