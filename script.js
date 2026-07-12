@@ -496,22 +496,48 @@ async function baixarPDFDireto(nomeArquivo, botao) {
         botao.dataset.textoOriginal = botao.innerHTML;
         botao.innerHTML = "Baixando...";
     }
-    // A captura sempre acontece em 100% de zoom, independente do zoom do preview
-    const transformAnterior = canvas.style.transform;
-    canvas.style.transform = "none";
+    // ---------------------------------------------------------------
+    // CORREÇÃO DO "PDF EM BRANCO":
+    // o preview (#docCanvas) vive dentro de um painel com
+    // "position: sticky" (.col-preview) e um contêiner com rolagem
+    // própria (.preview-body { overflow: auto }). Essa combinação é um
+    // bug conhecido do html2canvas: ele não calcula corretamente a
+    // posição/recorte de elementos dentro de ancestrais sticky/overflow,
+    // e o resultado é uma captura "fantasma" — o PDF sai gerado, mas em
+    // branco, mesmo sem erro nenhum no console.
+    // A solução robusta é clonar o conteúdo para um contêiner isolado,
+    // fixado fora da área visível da tela (sem sticky, sem scroll), e
+    // capturar esse clone — assim o html2canvas nunca lida com o painel
+    // problemático.
+    // ---------------------------------------------------------------
+    const clone = canvas.cloneNode(true);
+    clone.style.transform = "none";
+    clone.style.margin = "0";
+
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "fixed";
+    wrapper.style.top = "0";
+    wrapper.style.left = "0";
+    // Fora da área visível, mas ainda renderizado normalmente pelo
+    // navegador (display:none faria o html2canvas capturar em branco).
+    wrapper.style.transform = "translateX(-10000px)";
+    wrapper.style.zIndex = "-1";
+    wrapper.appendChild(clone);
+    document.body.appendChild(wrapper);
+
     try {
-        // Espera as imagens (logo + fundo decorativo) carregarem de fato antes
-        // de fotografar o conteúdo — sem isso o html2canvas pode capturar o
+        // Espera as imagens (se houver) carregarem de fato antes de
+        // fotografar o conteúdo — sem isso o html2canvas pode capturar o
         // documento antes das imagens pintarem, gerando um PDF em branco.
-        await aguardarImagens(canvas);
+        await aguardarImagens(clone);
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-        const largura = canvas.offsetWidth;
-        const altura = canvas.offsetHeight;
+        const largura = clone.offsetWidth;
+        const altura = clone.offsetHeight;
 
-        // Altura de UMA página "impressa" (mesma proporção do fundo decorativo,
-        // formato A4). Se o conteúdo passar de uma página, o html2pdf fatia
-        // automaticamente em várias páginas reais.
+        // Altura de UMA página "impressa" (mesma proporção do fundo
+        // decorativo, formato A4). Se o conteúdo passar de uma página, o
+        // html2pdf fatia automaticamente em várias páginas reais.
         const ALTURA_PAGINA = 905;
         const alturaPagina = Math.min(altura, ALTURA_PAGINA);
 
@@ -529,20 +555,14 @@ async function baixarPDFDireto(nomeArquivo, botao) {
             html2canvas: {
                 scale: escala,
                 useCORS: true,
+                // O clone está isolado, sem sticky/scroll/zoom no caminho,
+                // então a posição real dele já bate com (0,0) — não é mais
+                // necessário compensar scroll da janela nem forçar
+                // windowWidth/windowHeight do documento inteiro.
                 scrollX: 0,
-                // Sem "scrollY"/"windowWidth"/"windowHeight" explícitos, o html2canvas
-                // usa a rolagem e o tamanho da JANELA atual como referência para
-                // recortar o elemento — e o painel de preview fica dentro de uma
-                // coluna com "position: sticky" e um contêiner com rolagem própria
-                // (.preview-body). Essa combinação confunde o cálculo de onde o
-                // #docCanvas realmente está na página, fazendo o html2canvas
-                // capturar uma fatia deslocada dele (o efeito visual é conteúdo
-                // cortado na borda direita do PDF, mesmo com o layout certo na tela).
-                // Fixando esses valores com base no próprio documento, a captura
-                // sempre bate exatamente com a posição real do elemento.
-                scrollY: -window.scrollY,
-                windowWidth: document.documentElement.scrollWidth,
-                windowHeight: document.documentElement.scrollHeight
+                scrollY: 0,
+                windowWidth: largura,
+                windowHeight: altura
             },
             jsPDF: {
                 unit: "px",
@@ -555,7 +575,7 @@ async function baixarPDFDireto(nomeArquivo, botao) {
             }
         };
 
-        await html2pdf().set(opcoes).from(canvas).save();
+        await html2pdf().set(opcoes).from(clone).save();
     } catch (erro) {
         console.error(erro);
         const ehErroDeSeguranca = /tainted|SecurityError|cross-origin/i.test(String(erro && (erro.message || erro.name || erro)));
@@ -569,7 +589,7 @@ async function baixarPDFDireto(nomeArquivo, botao) {
             alert("Não foi possível gerar o PDF. Tente novamente.");
         }
     } finally {
-        canvas.style.transform = transformAnterior;
+        wrapper.remove();
         if (botao) {
             botao.disabled = false;
             botao.innerHTML = botao.dataset.textoOriginal;
