@@ -1,645 +1,663 @@
 /* ==========================================================
-   CENTRAL DE DECLARAÇÕES
-   Projeto de demonstração/portfólio (verificação de pagamento,
-   conta ativa, baixa de DDA, carta de circularização,
-   termo de titularidade e pagamento duplicado)
-
-   O preview à direita é AO VIVO: qualquer alteração nos campos
-   já atualiza o documento imediatamente (sem precisar clicar em
-   nenhum botão). O botão "Download PDF" só valida os campos
-   obrigatórios e gera o arquivo para download.
+   CENTRAL DE DECLARAÇÕES — ESTILOS
 ========================================================== */
-let tipoPagamento = "PIX";
-let paginaAtivaId = "pesquisa";
-let zoomAtual = 100;
-/* ==========================================================
-   INICIALIZAÇÃO
-========================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-    iniciarSistema();
-});
-function iniciarSistema() {
-    configurarMenu();
-    configurarPagamento();
-    configurarMascarasMonetarias();
-    configurarAtualizacaoAoVivo();
-    configurarBotaoDownload();
-    configurarZoomControls();
-    mostrarPagina("pesquisa");
+:root {
+    --ink: #14161c;
+    --ink-soft: #40434c;
+    --muted: #8a8f98;
+    --border: #e6e8ee;
+    --field-bg: #f5f6f9;
+    --page-bg: #f2f4f8;
+    --card-bg: #ffffff;
+    --rail-bg: #14161c;
+    --radius-xl: 22px;
+    --radius-lg: 18px;
+    --radius-md: 13px;
+    --radius-sm: 10px;
+    --radius-pill: 999px;
+    /* paleta de cores */
+    --brand: #2954ff;
+    --brand-dark: #1d3fd1;
+    --brand-soft: #eef2ff;
+    --green: #17a673;
+    --green-soft: #e8f8f1;
+    --red: #e5484d;
+    --red-soft: #fdecec;
+    --cyan: #0ea5c8;
+    --cyan-soft: #e6f7fb;
+    --purple: #8b5cf6;
+    --purple-soft: #f2edfe;
+    --teal: #0fb5ae;
+    --teal-soft: #e6fbf9;
+    --orange: #f5883f;
+    --orange-soft: #fef1e6;
+    --indigo: #6366f1;
+    --indigo-soft: #eeeefd;
+    /* escala de espaçamento — usada de forma consistente em toda a interface */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-7: 32px;
+    --sp-8: 48px;
+    /* movimento + elevação padronizados */
+    --ease: cubic-bezier(.4, 0, .2, 1);
+    --dur: .16s;
+    --shadow-xs: 0 1px 2px rgba(20, 22, 28, .04);
+    --shadow-sm: 0 1px 2px rgba(20, 22, 28, .03), 0 16px 32px -24px rgba(20, 22, 28, .18);
+    --shadow-md: 0 2px 6px rgba(20, 22, 28, .08), 0 18px 36px -16px rgba(20, 22, 28, .28);
+    --shadow-brand: 0 12px 24px -10px rgba(41, 84, 255, .45);
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: var(--page-bg);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
 }
 /* ==========================================================
-   MENU DE TIPOS DE DOCUMENTO
+   ESTRUTURA GERAL (barra lateral + conteúdo)
 ========================================================== */
-function configurarMenu() {
-    const menus = document.querySelectorAll(".doc-type-card");
-    menus.forEach(menu => {
-        menu.addEventListener("click", () => {
-            menus.forEach(item => item.classList.remove("active"));
-            menu.classList.add("active");
-            mostrarPagina(menu.dataset.page);
-        });
-    });
+.app-shell {
+    display: flex;
+    min-height: 100vh;
 }
-function mostrarPagina(id) {
-    paginaAtivaId = id;
-    document.querySelectorAll(".page").forEach(pagina => {
-        pagina.classList.remove("active");
-    });
-    const pagina = document.getElementById(id);
-    if (pagina) pagina.classList.add("active");
-    // A etapa "Forma de pagamento" (PIX/Boleto) só se aplica à Verificação de Pagamento
-    const stepPagamento = document.getElementById("stepPagamento");
-    if (stepPagamento) {
-        stepPagamento.style.display = (id === "pesquisa") ? "" : "none";
+.side-rail {
+    flex: none;
+    width: 72px;
+    background: linear-gradient(180deg, var(--rail-bg), #1b1e27);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px 0 18px;
+    gap: 16px;
+}
+.side-rail-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px -6px rgba(41, 84, 255, .55);
+}
+.side-rail-logo .brand-mark {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+.side-rail-spacer {
+    flex: 1;
+}
+.side-rail-foot {
+    color: #4a4e59;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--dur) var(--ease);
+}
+.side-rail-foot:hover {
+    color: #9aa0ad;
+}
+.wrap {
+    flex: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 32px 48px;
+    min-width: 0;
+}
+/* ==========================================================
+   CABEÇALHO
+========================================================== */
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: var(--sp-6);
+    padding-bottom: var(--sp-5);
+    border-bottom: 1px solid var(--border);
+}
+.header-icon {
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border-radius: var(--radius-md);
+    background: var(--brand-soft);
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.app-header h1 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+.app-header .subtitle {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+}
+/* ==========================================================
+   LAYOUT GERAL
+========================================================== */
+.layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--sp-5);
+    align-items: start;
+}
+.col-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+}
+/* ==========================================================
+   CARDS DE ETAPA
+========================================================== */
+.step-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-6);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+.step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-5);
+}
+.step-num {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.step-header h2 {
+    margin: 0 0 2px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+}
+.step-header p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+/* ---------- grade de tipos de documento ---------- */
+.doc-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-3);
+}
+.doc-type-card, .payment-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    text-align: center;
+    padding: var(--sp-4) var(--sp-3);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: #fff;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease),
+        transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.doc-type-card:hover, .payment-card:hover {
+    border-color: var(--brand);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px -14px rgba(41, 84, 255, .4);
+}
+.doc-type-card:active, .payment-card:active {
+    transform: translateY(0);
+}
+.doc-type-card.active, .payment-card.active {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1.5px var(--brand);
+}
+.dtc-check {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    font-size: 11px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px -2px rgba(41, 84, 255, .55);
+}
+.doc-type-card.active .dtc-check, .payment-card.active .dtc-check {
+    display: flex;
+}
+.dtc-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--dur) var(--ease);
+}
+.doc-type-card:hover .dtc-icon, .payment-card:hover .dtc-icon {
+    transform: scale(1.06);
+}
+.dtc-blue { background: var(--brand-soft); color: var(--brand); }
+.dtc-green { background: var(--green-soft); color: var(--green); }
+.dtc-red { background: var(--red-soft); color: var(--red); }
+.dtc-cyan { background: var(--cyan-soft); color: var(--cyan); }
+.dtc-purple { background: var(--purple-soft); color: var(--purple); }
+.dtc-teal { background: var(--teal-soft); color: var(--teal); }
+.dtc-orange { background: var(--orange-soft); color: var(--orange); }
+.dtc-indigo { background: var(--indigo-soft); color: var(--indigo); }
+.dtc-ink { background: var(--field-bg); color: var(--ink-soft); }
+/* ---------- grade forma de pagamento ---------- */
+.payment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-3);
+}
+.payment-card {
+    flex-direction: row;
+    padding: var(--sp-4);
+    font-size: 13px;
+}
+/* ---------- formulários das páginas ---------- */
+.page {
+    display: none;
+    flex-direction: column;
+    gap: var(--sp-2);
+    animation: fade-in var(--dur) var(--ease);
+}
+.page.active {
+    display: flex;
+}
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.field-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: var(--sp-4) 0 2px;
+}
+.page label.field-label:first-of-type {
+    margin-top: 0;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 0 var(--sp-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--field-bg);
+    font-size: 14px;
+    color: var(--ink);
+    font-family: inherit;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease);
+}
+input, select {
+    height: 46px;
+}
+textarea {
+    padding: var(--sp-3) var(--sp-4);
+    line-height: 1.5;
+    resize: vertical;
+}
+input:hover, select:hover, textarea:hover {
+    border-color: #c7cbd6;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--brand);
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--brand-soft);
+}
+input::placeholder, textarea::placeholder {
+    color: #a9adb5;
+}
+/* ---------- botão gerar declaração ---------- */
+.btn-primary {
+    margin-top: var(--sp-6);
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: var(--brand);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    box-shadow: var(--shadow-brand);
+    transition: background var(--dur) var(--ease), opacity var(--dur) var(--ease),
+        transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.btn-primary:hover {
+    background: var(--brand-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 18px 32px -14px rgba(41, 84, 255, .6);
+}
+.btn-primary:disabled {
+    opacity: .7;
+    cursor: default;
+}
+.security-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    margin: var(--sp-3) 0 0;
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+}
+/* ==========================================================
+   PAINEL DIREITO — PREVIEW DO PDF
+========================================================== */
+.col-preview {
+    position: sticky;
+    top: 20px;
+}
+.preview-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sp-5) var(--sp-5);
+    border-bottom: 1px solid var(--border);
+}
+.preview-header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+}
+.preview-header h3 {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ink-soft);
+}
+/* ponto verde pulsante indicando que o preview é atualizado em tempo real */
+.live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(23, 166, 115, .55);
+    animation: live-pulse 1.8s infinite;
+}
+@keyframes live-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(23, 166, 115, .55); }
+    70% { box-shadow: 0 0 0 6px rgba(23, 166, 115, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(23, 166, 115, 0); }
+}
+/* ---------- botão de download ---------- */
+.btn-download {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    border: none;
+    background: var(--brand);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 11px 18px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    box-shadow: var(--shadow-brand);
+    transition: background var(--dur) var(--ease), transform var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease), opacity var(--dur) var(--ease);
+    white-space: nowrap;
+}
+.btn-download:hover {
+    background: var(--brand-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 16px 28px -10px rgba(41, 84, 255, .6);
+}
+.btn-download:disabled {
+    opacity: .6;
+    cursor: default;
+    transform: none;
+}
+.preview-body {
+    position: relative;
+    min-height: 640px;
+    max-height: 760px;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    padding: var(--sp-7) 0;
+    background:
+        radial-gradient(720px 360px at 50% 0%, rgba(41, 84, 255, .05), transparent 70%),
+        var(--page-bg);
+}
+/* moldura A4: define a proporção real de uma folha (210 x 297mm) para o
+   preview ao vivo do documento */
+.a4-viewport {
+    flex: none;
+    align-self: flex-start;
+}
+.doc-canvas {
+    /* ATENÇÃO: a largura fixa (640px) e o background-size (640px 905px) são
+       usados também pelo script.js para calcular a paginação real do PDF
+       (ALTURA_PAGINA = 905 — mesma proporção de uma folha A4 real). Não
+       alterar estes dois valores: é isso que faz 1 página do preview = 1
+       página A4 de verdade no PDF. */
+    width: 640px;
+    background-color: #ffffff;
+    /* fundo simples: apenas um degradê sutil de marca, sem imagem
+       decorativa (versão de portfólio/demonstração, sem assets
+       proprietários). */
+    background-image:
+        radial-gradient(900px 500px at 100% -10%, rgba(41, 84, 255, .05), transparent 60%);
+    background-position: center top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* espaçamento vertical enxuto o suficiente para que TODAS as
+       declarações (mesmo as mais longas, como a carta de circularização,
+       que tem 4 linhas de saldo + título de seção) caibam em uma única
+       página A4 (905px) — ver ajuste de ritmo vertical mais abaixo
+       (.doc-logo, .doc-date, p, .doc-table-row, .doc-section-title,
+       .doc-signature, .doc-footer). */
+    padding: 48px 48px 60px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ink);
+    /* aparência de folha A4 flutuando sobre o fundo cinza do preview */
+    box-shadow: var(--shadow-md);
+    border-radius: 2px;
+    transform-origin: top center;
+    transition: transform .15s ease;
+    /* segurança extra: qualquer valor sem espaços (código de barras longo,
+       CNPJ colado, ID muito grande) quebra a linha em vez de estourar a
+       largura da folha e ser cortado na exportação do PDF */
+    overflow-wrap: anywhere;
+}
+.doc-canvas .ph {
+    color: #c7cad1;
+    font-style: italic;
+}
+/* selo de texto exibido no topo do documento (versão de portfólio,
+   sem logo real da empresa) */
+.doc-canvas .doc-logo-fallback {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    margin-bottom: 24px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+}
+.doc-canvas .doc-date {
+    margin-bottom: 20px;
+    color: var(--brand);
+    font-weight: 600;
+}
+.doc-canvas p {
+    margin: 0 0 14px;
+}
+.doc-canvas .doc-table-row {
+    display: flex;
+    justify-content: space-between;
+    max-width: 380px;
+    margin: 3px 0;
+}
+.doc-canvas .doc-table-row span:first-child {
+    color: var(--ink-soft);
+}
+.doc-canvas .doc-section-title {
+    margin: 16px 0 6px;
+    font-weight: 700;
+    color: var(--brand);
+}
+.doc-canvas .doc-signature {
+    text-align: center;
+    font-weight: 700;
+    margin-top: 22px;
+}
+.doc-canvas .doc-title {
+    color: var(--brand);
+    font-size: 21px;
+    font-weight: 800;
+    margin: 4px 0 20px;
+}
+.doc-canvas .doc-footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid #e9ebee;
+    font-size: 10.5px;
+    color: var(--muted);
+    text-align: center;
+}
+/* ---------- barra inferior do preview (zoom + download) ---------- */
+.preview-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+    background: var(--field-bg);
+}
+.preview-controls-zoom {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+}
+.preview-controls button {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 var(--sp-2);
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: var(--radius-sm);
+    color: var(--ink-soft);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease),
+        background var(--dur) var(--ease);
+}
+.preview-controls-zoom button:hover:not(:disabled) {
+    border-color: var(--brand);
+    color: var(--brand);
+    background: var(--brand-soft);
+}
+.preview-controls-zoom button:disabled {
+    opacity: .4;
+    cursor: default;
+}
+.preview-controls span#zoomIndicator {
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 44px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+.preview-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    margin: 0 var(--sp-1);
+}
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
     }
-    atualizarPreviewAoVivo();
-}
-/* ==========================================================
-   PIX / BOLETO
-========================================================== */
-function configurarPagamento() {
-    const pix = document.getElementById("btnPix");
-    const boleto = document.getElementById("btnBoleto");
-    if (!pix || !boleto) return;
-    pix.addEventListener("click", () => {
-        tipoPagamento = "PIX";
-        pix.classList.add("active");
-        boleto.classList.remove("active");
-        document.getElementById("lblIdentificador").innerText = "ID Fim a Fim";
-        document.getElementById("identificadorPagamento").placeholder = "Informe o identificador";
-        atualizarPreviewAoVivo();
-    });
-    boleto.addEventListener("click", () => {
-        tipoPagamento = "BOLETO";
-        boleto.classList.add("active");
-        pix.classList.remove("active");
-        document.getElementById("lblIdentificador").innerText = "Código de Barras";
-        document.getElementById("identificadorPagamento").placeholder = "Informe o código de barras";
-        atualizarPreviewAoVivo();
-    });
-}
-/* ==========================================================
-   MÁSCARA DE VALOR MONETÁRIO
-========================================================== */
-function configurarMascarasMonetarias() {
-    document.querySelectorAll("input.money").forEach(input => {
-        input.addEventListener("input", () => {
-            const numero = somenteNumeros(input.value);
-            input.value = numero === ""
-                ? ""
-                : moeda(Number(numero) / 100).replace("R$", "").trim();
-        });
-    });
-}
-/* ==========================================================
-   ATUALIZAÇÃO AO VIVO DO PREVIEW
-   Qualquer digitação/seleção dentro do formulário ativo já
-   redesenha o documento na hora — não depende de nenhum botão.
-========================================================== */
-function configurarAtualizacaoAoVivo() {
-    document.addEventListener("input", (evento) => {
-        if (evento.target.closest(".page")) atualizarPreviewAoVivo();
-    });
-    document.addEventListener("change", (evento) => {
-        if (evento.target.closest(".page")) atualizarPreviewAoVivo();
-    });
-}
-function atualizarPreviewAoVivo() {
-    const montar = MONTADORES[paginaAtivaId];
-    if (!montar) return;
-    mostrarPreview(montar());
-}
-/* ==========================================================
-   DATA POR EXTENSO (cabeçalho — "São Paulo, 06 de julho de 2026.")
-========================================================== */
-const MESES = [
-    "janeiro", "fevereiro", "março", "abril", "maio", "junho",
-    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
-];
-function dataExtenso() {
-    const hoje = new Date();
-    return `São Paulo, ${hoje.getDate()} de ${MESES[hoje.getMonth()]} de ${hoje.getFullYear()}.`;
-}
-/* ---------- data extenso a partir de um <input type="date"> ---------- */
-function extensoData(valorInput) {
-    if (!valorInput) return "";
-    const [ano, mes, dia] = valorInput.split("-").map(Number);
-    if (!ano || !mes || !dia) return "";
-    return `${String(dia).padStart(2, "0")} de ${MESES[mes - 1]} de ${ano}`;
-}
-/* ---------- mês/ano a partir de <input type="month"> ---------- */
-function mesAno(valorInput) {
-    if (!valorInput) return "";
-    const [ano, mes] = valorInput.split("-");
-    return `${mes}/${ano}`;
-}
-/* ---------- data dd/mm/aaaa a partir de <input type="date"> ---------- */
-function dataBR(valorInput) {
-    if (!valorInput) return "";
-    const [ano, mes, dia] = valorInput.split("-");
-    return `${dia}/${mes}/${ano}`;
-}
-/* ==========================================================
-   MOEDA
-========================================================== */
-function moeda(valor) {
-    return Number(valor || 0).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
-}
-function somenteNumeros(texto) {
-    return (texto || "").replace(/\D/g, "");
-}
-function valorCampo(id) {
-    const el = document.getElementById(id);
-    if (!el) return 0;
-    return Number(somenteNumeros(el.value)) / 100;
-}
-function campo(id) {
-    const el = document.getElementById(id);
-    if (!el) return "";
-    return el.value.trim();
-}
-/* ==========================================================
-   FORMATA CNPJ
-========================================================== */
-function formatarCNPJ(cnpj) {
-    cnpj = somenteNumeros(cnpj);
-    if (cnpj.length !== 14) return cnpj;
-    return cnpj.replace(
-        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-        "$1.$2.$3/$4-$5"
-    );
-}
-/* ==========================================================
-   VALIDAÇÃO (usada só no clique de "Download PDF")
-========================================================== */
-function obrigatorio(id, nome) {
-    const valor = campo(id);
-    if (valor === "") {
-        alert(`Informe ${nome}.`);
-        const el = document.getElementById(id);
-        if (el) el.focus();
-        return false;
+    .col-preview {
+        position: static;
     }
-    return true;
-}
-const VALIDADORES = {
-    pesquisa: () => obrigatorio("identificadorPagamento", "o identificador") && obrigatorio("valorPagamento", "o valor"),
-    contaAtiva: () => obrigatorio("cnpjAtiva", "o CNPJ") && obrigatorio("empresaAtiva", "a empresa") && obrigatorio("idContaAtiva", "o ID da Conta") && obrigatorio("dataCriacaoAtiva", "a data de criação"),
-    contaCancelada: () => obrigatorio("cnpjCancelada", "o CNPJ") && obrigatorio("empresaCancelada", "a empresa") && obrigatorio("idContaCancelada", "o ID da Conta") && obrigatorio("dataCriacaoCancelada", "a data de criação") && obrigatorio("dataCancelamento", "a data de cancelamento"),
-    dda: () => obrigatorio("clienteDDA", "o nome do cliente") && obrigatorio("codigoBarrasDDA", "o código de barras") && obrigatorio("valorDDA", "o valor") && obrigatorio("dataBaixaDDA", "a data da baixa"),
-    circularizacao: () => obrigatorio("empresaCircularizacao", "a empresa") && obrigatorio("idContaCircularizacao", "o ID da Conta") && obrigatorio("dataBaseCircularizacao", "a data base"),
-    titularidade: () => obrigatorio("empresaTitularidade", "a empresa") && obrigatorio("cnpjTitularidade", "o CNPJ") && obrigatorio("bancoTitularidade", "o banco") && obrigatorio("agenciaTitularidade", "a agência") && obrigatorio("contaTitularidade", "a conta") && obrigatorio("dataCadastroTitularidade", "a data de cadastro"),
-    pagamentoDuplicado: () => obrigatorio("codigoBarrasDuplicado", "o código de barras") && obrigatorio("valorDuplicado", "o valor")
-};
-const NOMES_ARQUIVO = {
-    pesquisa: "Verificacao_Pagamento.pdf",
-    contaAtiva: "Conta_Ativa.pdf",
-    contaCancelada: "Conta_Cancelada.pdf",
-    dda: "Comprovante_DDA.pdf",
-    circularizacao: "Carta_Circularizacao.pdf",
-    titularidade: "Termo_Titularidade.pdf",
-    pagamentoDuplicado: "Pagamento_Duplicado.pdf"
-};
-/* ==========================================================
-   PLACEHOLDERS DO PREVIEW AO VIVO
-   Enquanto um campo obrigatório não é preenchido, o documento
-   mostra um marcador discreto no lugar (em vez de ficar quebrado
-   ou vazio) — assim que o usuário preenche, o texto real aparece.
-========================================================== */
-function ph(valor, rotulo) {
-    return valor ? valor : `<span class="ph">${rotulo}</span>`;
-}
-function phTexto(id, rotulo) {
-    return ph(campo(id), rotulo);
-}
-function phCNPJ(id, rotulo) {
-    const bruto = campo(id);
-    return ph(bruto ? formatarCNPJ(bruto) : "", rotulo);
-}
-function phMoeda(id, rotulo) {
-    const bruto = campo(id);
-    return ph(bruto ? moeda(valorCampo(id)) : "", rotulo);
-}
-function phDataExtenso(id, rotulo) {
-    return ph(extensoData(campo(id)), rotulo);
-}
-function phDataBR(id, rotulo) {
-    return ph(dataBR(campo(id)), rotulo);
-}
-/* ==========================================================
-   PREVIEW / CANVAS — exibido ao vivo no painel direito (A4)
-   e também é o que vira o PDF no download.
-========================================================== */
-function mostrarPreview(html) {
-    const canvas = document.getElementById("docCanvas");
-    if (canvas) canvas.innerHTML = html;
-}
-/* ==========================================================
-   LOGO DO DOCUMENTO
-   Selo de texto genérico — versão de portfólio, sem marca real.
-========================================================== */
-function logoTag() {
-    return `<div class="doc-logo doc-logo-fallback">Empresa Exemplo</div>`;
-}
-const RODAPE = `
-    <div class="doc-footer">
-        Documento gerado apenas para fins de demonstração &nbsp;·&nbsp; exemplo.com
-    </div>
-`;
-/* ==========================================================
-   1) VERIFICAÇÃO DE PAGAMENTO
-========================================================== */
-function montarHtmlPesquisa() {
-    const rotuloCampo = tipoPagamento === "PIX" ? "identificador" : "código de barras";
-    const identificador = phTexto("identificadorPagamento", rotuloCampo);
-    const valor = phMoeda("valorPagamento", "valor");
-    const resultado = campo("resultadoPesquisa") || document.getElementById("resultadoPesquisa").value;
-    const via = tipoPagamento === "PIX" ? "Pix" : "boleto bancário";
-    const rotulo = tipoPagamento === "PIX" ? "ID Fim a Fim" : "código de barras";
-    const conclusao = resultado === "identificado"
-        ? "Após análise do pagamento realizado, informamos que ele foi identificado e devidamente compensado em nosso sistema."
-        : "Após análise do pagamento realizado, informamos que ele não foi identificado. Sugerimos que o pagador entre em contato com a financeira para localizar este pagamento.";
-    return `
-        ${logoTag()}
-        <div class="doc-date">${dataExtenso()}</div>
-        <p>Este é um texto de teste utilizado apenas para fins de demonstração do
-        layout deste documento. Nenhum dado real de cliente, pagamento ou
-        empresa está sendo exibido aqui — trata-se somente de um exemplo
-        ilustrativo de como o conteúdo dinâmico é posicionado na página.</p>
-        <p>Através da pesquisa de pagamento realizada via ${via} através do ${rotulo}:
-        "${identificador}" no valor de "${valor}"</p>
-        <p>${conclusao}</p>
-        <p>Este parágrafo adicional também é apenas texto de teste, incluído para
-        simular a extensão de um documento real e verificar o comportamento do
-        layout com blocos de texto mais longos, quebras de linha e espaçamento
-        entre parágrafos.</p>
-        <p>Atenciosamente,<br><strong>Equipe Exemplo</strong></p>
-        ${RODAPE}
-    `;
-}
-/* ==========================================================
-   2) CONTA ATIVA
-========================================================== */
-function montarHtmlContaAtiva() {
-    const cnpj = phCNPJ("cnpjAtiva", "CNPJ");
-    const empresa = phTexto("empresaAtiva", "razão social");
-    const id = phTexto("idContaAtiva", "ID da conta");
-    const dataCriacao = phDataExtenso("dataCriacaoAtiva", "data de criação");
-    const hora = campo("horaCriacaoAtiva") || "00:00";
-    return `
-        ${logoTag()}
-        <div class="doc-date">${dataExtenso()}</div>
-        <p>Este documento contém apenas texto de teste, criado para demonstrar a
-        estrutura visual da declaração. Todos os valores abaixo — nomes, CNPJ,
-        datas e horários — são preenchidos dinamicamente a partir dos campos
-        do formulário e não representam nenhuma empresa real.</p>
-        <p>Empresa Exemplo Ltda., com sede fictícia utilizada apenas para fins
-        ilustrativos deste protótipo,</p>
-        <p>confirma a partir deste documento a existência de conta com o CNPJ ${cnpj},
-        nomeada como <strong>${empresa}</strong> – ID: ${id}</p>
-        <p>criada em ${dataCriacao}, horário ${hora}, e ativa até esta data.</p>
-        <p>Atenciosamente,<br><strong>Equipe Exemplo</strong></p>
-        ${RODAPE}
-    `;
-}
-/* ==========================================================
-   3) CONTA CANCELADA
-========================================================== */
-function montarHtmlContaCancelada() {
-    const cnpj = phCNPJ("cnpjCancelada", "CNPJ");
-    const empresa = phTexto("empresaCancelada", "razão social");
-    const id = phTexto("idContaCancelada", "ID da conta");
-    const dataCriacao = phDataExtenso("dataCriacaoCancelada", "data de criação");
-    const dataCancelamento = phDataExtenso("dataCancelamento", "data de cancelamento");
-    return `
-        ${logoTag()}
-        <div class="doc-date">${dataExtenso()}</div>
-        <p>Texto de teste para fins de demonstração. Este parágrafo simula um
-        texto institucional mais longo, apenas para verificar como o layout se
-        comporta com blocos maiores de conteúdo, sem qualquer vínculo com dados
-        reais de empresa ou cliente.</p>
-        <p>Empresa Exemplo Ltda., com sede fictícia utilizada apenas para fins
-        ilustrativos deste protótipo,</p>
-        <p>confirma a partir deste documento o cancelamento da conta com o CNPJ ${cnpj},
-        nomeada como <strong>${empresa}</strong> – ID: ${id}</p>
-        <p>criada em ${dataCriacao} e cancelada em ${dataCancelamento}.</p>
-        <p>Atenciosamente,<br><strong>Equipe Exemplo</strong></p>
-        ${RODAPE}
-    `;
-}
-/* ==========================================================
-   4) BAIXA DE DDA
-========================================================== */
-function montarHtmlDDA() {
-    const cliente = phTexto("clienteDDA", "nome do cliente");
-    const codigo = phTexto("codigoBarrasDDA", "código de barras");
-    const valor = phMoeda("valorDDA", "valor");
-    const dataBaixa = phDataBR("dataBaixaDDA", "data da baixa");
-    return `
-        ${logoTag()}
-        <div class="doc-date">${dataExtenso()}</div>
-        <p>Texto de teste incluído apenas para demonstração deste modelo de
-        documento. Os dados abaixo são meramente ilustrativos e servem para
-        mostrar como o conteúdo dinâmico se encaixa no restante do texto.</p>
-        <p>Informamos que o registro em nome de "${cliente}", com número de
-        código de barras: "${codigo}", no valor de "${valor}" encontra-se finalizado
-        junto a esta instituição desde "${dataBaixa}".</p>
-        <p>Este é mais um parágrafo de teste, adicionado apenas para simular um
-        texto mais extenso e verificar o espaçamento e a quebra de linhas do
-        layout em cenários com maior volume de conteúdo.</p>
-        <p>Atenciosamente,<br><strong>Equipe Exemplo</strong></p>
-        ${RODAPE}
-    `;
-}
-/* ==========================================================
-   5) CARTA DE CIRCULARIZAÇÃO
-========================================================== */
-function montarHtmlCircularizacao() {
-    const empresa = phTexto("empresaCircularizacao", "razão social");
-    const idConta = phTexto("idContaCircularizacao", "ID da conta");
-    const dataBase = phDataBR("dataBaseCircularizacao", "data base");
-    const contaPagamento = phMoeda("saldoContaPagamento", "valor");
-    const recebiveis = phMoeda("saldoContaRecebiveis", "valor");
-    const vinculadaPagamento = phMoeda("vinculadaContaPagamento", "valor");
-    const vinculadaRecebiveis = phMoeda("vinculadaContaRecebiveis", "valor");
-    return `
-        ${logoTag()}
-        <div class="doc-date">${dataExtenso()}</div>
-        <p>Texto de teste. Este trecho substitui o conteúdo institucional real e
-        serve apenas para demonstrar a formatação da carta, incluindo a tabela
-        de valores e a assinatura ao final do documento.</p>
-        <p>Empresa Exemplo Ltda.,
-        informamos os seguintes saldos em nome "${empresa}" em conta com
-        data base em ${dataBase}:</p>
-        <p>ID Conta: "${idConta}"</p>
-        <div class="doc-table-row"><span>Conta Pagamento</span><span>"${contaPagamento}"</span></div>
-        <div class="doc-table-row"><span>Recebíveis</span><span>"${recebiveis}"</span></div>
-        <p class="doc-section-title">Contas vinculadas</p>
-        <div class="doc-table-row"><span>Conta Pagamento</span><span>"${vinculadaPagamento}"</span></div>
-        <div class="doc-table-row"><span>Recebíveis</span><span>"${vinculadaRecebiveis}"</span></div>
-        <p class="doc-signature">Empresa Exemplo Ltda.</p>
-        ${RODAPE}
-    `;
-}
-/* ==========================================================
-   6) TERMO DE TITULARIDADE (DECLARAÇÃO DE CONTA)
-========================================================== */
-function montarHtmlTitularidade() {
-    const empresa = phTexto("empresaTitularidade", "razão social");
-    const cnpj = phCNPJ("cnpjTitularidade", "CNPJ");
-    const banco = phTexto("bancoTitularidade", "banco");
-    const agencia = phTexto("agenciaTitularidade", "agência");
-    const conta = phTexto("contaTitularidade", "conta");
-    const dataCadastro = phDataExtenso("dataCadastroTitularidade", "data de cadastro");
-    return `
-        ${logoTag()}
-        <div class="doc-date">${dataExtenso()}</div>
-        <p>Texto de teste utilizado apenas para fins de demonstração deste
-        modelo de declaração. O objetivo é mostrar como o layout se comporta
-        com um texto de tamanho médio antes dos dados dinâmicos abaixo.</p>
-        <p>À</p>
-        <p><strong>${empresa}</strong><br>CNPJ: ${cnpj}</p>
-        <p>De acordo com nossos registros a ${empresa}, CNPJ: ${cnpj}, é titular da
-        conta de pagamentos ${conta}, agência ${agencia}, banco ${banco}, sendo
-        cadastrado desde ${dataCadastro}.</p>
-        <p>Limitado ao exposto.</p>
-        <p class="doc-signature">Empresa Exemplo Ltda.</p>
-        ${RODAPE}
-    `;
-}
-/* ==========================================================
-   7) PAGAMENTO DUPLICADO
-========================================================== */
-function montarHtmlPagamentoDuplicado() {
-    const codigo = phTexto("codigoBarrasDuplicado", "código de barras");
-    const valor = phMoeda("valorDuplicado", "valor");
-    const resultado = campo("resultadoDuplicado") || document.getElementById("resultadoDuplicado").value;
-    const paragrafos = resultado === "duplicado"
-        ? `<p>Identificamos que houve pagamento duplicado relacionado ao código acima.</p>
-           <p>Iremos dar continuidade ao processo de estorno do valor duplicado junto à financeira responsável.</p>`
-        : `<p>Identificamos que não houve pagamento duplicado relacionado ao código acima.</p>
-           <p>Sendo assim, sugerimos que o cliente entre em contato com a financeira para análise.</p>`;
-    return `
-        ${logoTag()}
-        <div class="doc-date">${dataExtenso()}</div>
-        <p>Este é apenas um texto de teste, criado para preencher o corpo do
-        documento durante a demonstração do projeto. Nenhuma informação real
-        de pagamento é utilizada aqui — os valores abaixo vêm dos campos de
-        exemplo preenchidos no formulário ao lado.</p>
-        <p>Através da pesquisa realizada via boleto bancário através do
-        código de barras: "${codigo}" no valor de ${valor}.</p>
-        ${paragrafos}
-        <p>Atenciosamente,<br><strong>Equipe Exemplo</strong></p>
-        ${RODAPE}
-    `;
-}
-const MONTADORES = {
-    pesquisa: montarHtmlPesquisa,
-    contaAtiva: montarHtmlContaAtiva,
-    contaCancelada: montarHtmlContaCancelada,
-    dda: montarHtmlDDA,
-    circularizacao: montarHtmlCircularizacao,
-    titularidade: montarHtmlTitularidade,
-    pagamentoDuplicado: montarHtmlPagamentoDuplicado
-};
-/* ==========================================================
-   DOWNLOAD DO PDF (com espera de imagens — corrige PDF em branco)
-========================================================== */
-function aguardarImagens(container) {
-    const imgs = Array.from(container.querySelectorAll("img"));
-    const promessas = imgs.map(img => {
-        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
-        return new Promise(resolve => {
-            img.addEventListener("load", resolve, { once: true });
-            img.addEventListener("error", resolve, { once: true });
-        });
-    });
-    return Promise.all(promessas);
-}
-function configurarBotaoDownload() {
-    const botao = document.getElementById("btnBaixarPDF");
-    if (!botao) return;
-    botao.addEventListener("click", async () => {
-        const validar = VALIDADORES[paginaAtivaId];
-        if (validar && !validar()) return;
-        // com todos os campos obrigatórios preenchidos, refaz o preview uma
-        // última vez para garantir que nenhum placeholder entre no PDF
-        atualizarPreviewAoVivo();
-        const nomeArquivo = NOMES_ARQUIVO[paginaAtivaId] || "declaracao.pdf";
-        await baixarPDFDireto(nomeArquivo, botao);
-    });
-}
-async function baixarPDFDireto(nomeArquivo, botao) {
-    const canvas = document.getElementById("docCanvas");
-    if (!canvas || canvas.innerHTML.trim() === "") {
-        alert("Preencha os dados da declaração primeiro.");
-        return;
-    }
-    // Quando a página é aberta direto do disco (file://), o navegador trata as
-    // imagens locais (logo/fundo) como "tainted" para o canvas e a geração do
-    // PDF falha sempre. Isso só funciona de verdade servido por HTTP(S) —
-    // ex: o link publicado no GitHub Pages.
-    if (location.protocol === "file:") {
-        alert(
-            "Este arquivo foi aberto direto do computador (file://), e por isso o navegador " +
-            "bloqueia a geração do PDF com as imagens do documento.\n\n" +
-            "Para testar, acesse pelo link publicado (GitHub Pages) ou rode um servidor local, " +
-            "em vez de abrir o index.html clicando duas vezes."
-        );
-        return;
-    }
-    if (botao) {
-        botao.disabled = true;
-        botao.dataset.textoOriginal = botao.innerHTML;
-        botao.innerHTML = "Baixando...";
-    }
-    // ---------------------------------------------------------------
-    // CORREÇÃO DO "PDF EM BRANCO" / "PDF CORTADO":
-    // o preview (#docCanvas) vive dentro de um painel com
-    // "position: sticky" (.col-preview) e um contêiner com rolagem
-    // própria (.preview-body { overflow: auto }). Essa combinação é um
-    // bug conhecido do html2canvas: ele não calcula corretamente a
-    // posição/recorte de elementos dentro de ancestrais sticky/overflow.
-    // A solução é clonar o conteúdo para um contêiner isolado. O clone
-    // precisa ficar na posição REAL (0,0) da tela — empurrá-lo para fora
-    // da tela com um "transform" grande (ex: translateX(-10000px)) faz o
-    // html2canvas recortar a captura no lugar errado, cortando o
-    // documento pela metade. Por isso, em vez de escondê-lo fora da
-    // tela, ele fica em (0,0) mas coberto por um overlay opaco de
-    // carregamento — assim a captura sempre bate certinho e o usuário
-    // só vê a tela de "Gerando PDF...".
-    // ---------------------------------------------------------------
-    const clone = canvas.cloneNode(true);
-    clone.style.transform = "none";
-    clone.style.margin = "0 auto";
-
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "fixed";
-    wrapper.style.top = "0";
-    wrapper.style.left = "0";
-    wrapper.style.width = "100%";
-    wrapper.style.zIndex = "9998";
-    wrapper.style.display = "flex";
-    wrapper.style.justifyContent = "center";
-    wrapper.appendChild(clone);
-
-    const overlay = document.createElement("div");
-    overlay.style.position = "fixed";
-    overlay.style.inset = "0";
-    overlay.style.background = "#f2f4f8";
-    overlay.style.zIndex = "9999";
-    overlay.style.display = "flex";
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-    overlay.style.fontFamily = "inherit";
-    overlay.style.color = "#40434c";
-    overlay.style.fontSize = "14px";
-    overlay.style.fontWeight = "600";
-    overlay.textContent = "Gerando PDF...";
-
-    document.body.appendChild(wrapper);
-    document.body.appendChild(overlay);
-
-    try {
-        // Espera as imagens (se houver) carregarem de fato antes de
-        // fotografar o conteúdo — sem isso o html2canvas pode capturar o
-        // documento antes das imagens pintarem, gerando um PDF em branco.
-        await aguardarImagens(clone);
-        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-        const largura = clone.offsetWidth;
-        const altura = clone.offsetHeight;
-
-        // Altura de UMA página "impressa" (mesma proporção do fundo
-        // decorativo, formato A4). Se o conteúdo passar de uma página, o
-        // html2pdf fatia automaticamente em várias páginas reais.
-        const ALTURA_PAGINA = 905;
-        const alturaPagina = Math.min(altura, ALTURA_PAGINA);
-
-        // Escala adaptativa: documentos muito longos usam escala menor para
-        // manter a geração rápida e o canvas total dentro de um tamanho seguro.
-        const escala = altura > 6000 ? 1 : altura > 3000 ? 1.5 : 2;
-
-        // Posição real do clone na tela (o wrapper o centraliza
-        // horizontalmente com "display:flex; justify-content:center").
-        // Passar esse retângulo explicitamente garante que o html2canvas
-        // capture exatamente essa área, sem cortes.
-        const rect = clone.getBoundingClientRect();
-
-        const opcoes = {
-            margin: 0,
-            filename: nomeArquivo,
-            image: {
-                type: "jpeg",
-                quality: 1
-            },
-            html2canvas: {
-                scale: escala,
-                useCORS: true,
-                x: rect.left,
-                y: rect.top,
-                scrollX: 0,
-                scrollY: 0,
-                width: largura,
-                height: altura,
-                windowWidth: document.documentElement.scrollWidth,
-                windowHeight: document.documentElement.scrollHeight
-            },
-            jsPDF: {
-                unit: "px",
-                format: [largura, alturaPagina],
-                orientation: "portrait"
-            },
-            pagebreak: {
-                mode: ["css", "legacy"],
-                avoid: "tr"
-            }
-        };
-
-        await html2pdf().set(opcoes).from(clone).save();
-    } catch (erro) {
-        console.error(erro);
-        const ehErroDeSeguranca = /tainted|SecurityError|cross-origin/i.test(String(erro && (erro.message || erro.name || erro)));
-        if (ehErroDeSeguranca) {
-            alert(
-                "Não foi possível gerar o PDF porque o navegador bloqueou a leitura de algum " +
-                "recurso do documento. Isso costuma acontecer quando a página não está sendo " +
-                "servida por HTTP(S) (ex: aberta direto do arquivo local)."
-            );
-        } else {
-            alert("Não foi possível gerar o PDF. Tente novamente.");
-        }
-    } finally {
-        wrapper.remove();
-        overlay.remove();
-        if (botao) {
-            botao.disabled = false;
-            botao.innerHTML = botao.dataset.textoOriginal;
-        }
+    .doc-type-grid, .payment-grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
-/* ==========================================================
-   ZOOM DO PREVIEW AO VIVO (A4) + TELA CHEIA
-========================================================== */
-function aplicarZoom() {
-    const canvas = document.getElementById("docCanvas");
-    if (canvas) canvas.style.transform = `scale(${zoomAtual / 100})`;
-    const indicadorZoom = document.getElementById("zoomIndicator");
-    if (indicadorZoom) indicadorZoom.innerText = `${zoomAtual}%`;
-}
-function configurarZoomControls() {
-    aplicarZoom();
-    ligar("btnZoomOut", () => { zoomAtual = Math.max(50, zoomAtual - 10); aplicarZoom(); });
-    ligar("btnZoomIn", () => { zoomAtual = Math.min(200, zoomAtual + 10); aplicarZoom(); });
-    ligar("btnFullscreen", () => {
-        const viewport = document.getElementById("a4Viewport");
-        if (viewport && viewport.requestFullscreen) viewport.requestFullscreen();
-    });
-}
-function ligar(id, funcao) {
-    const botao = document.getElementById(id);
-    if (botao) botao.addEventListener("click", funcao);
+@media (max-width: 640px) {
+    .side-rail {
+        display: none;
+    }
+    .wrap {
+        padding: 22px 16px 36px;
+    }
+    .preview-controls {
+        justify-content: center;
+    }
+    .preview-controls .btn-download {
+        width: 100%;
+        justify-content: center;
+    }
 }
